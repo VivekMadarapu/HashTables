@@ -102,19 +102,15 @@ public class HashTable {
         return null;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
         for (Entry entry:table) {
-            if(entry == null) {
-                out.append("null\n");
-            }
-            else if(entry.removed){
-                out.append("dummy\n");
-            }
-            else {
-                out.append(entry).append("\n");
-            }
+            out.append(entry).append("\n");
         }
         return out.toString();
     }
@@ -133,7 +129,13 @@ public class HashTable {
 
         @Override
         public String toString() {
-            return key + " : " + value;
+            if(removed){
+                return "dummy";
+            }
+            else {
+                return key + " : " + value;
+            }
+
         }
     }
 
@@ -144,7 +146,17 @@ public class HashTable {
         while (input.hasNext()){
             table.put(Integer.parseInt(input.next()), input.next() + " " + input.next());
         }
-        System.out.println(table);
+        table.remove(86770985);
+        System.out.println(table + "\n");
+
+        input = new Scanner(new File("sampledata101.txt"));
+
+
+        for (int i = 0; i < table.getSize(); i++) {
+            System.out.println(table.get(Integer.parseInt(input.next())));
+            input.next();input.next();
+        }
+
     }
 
 }
