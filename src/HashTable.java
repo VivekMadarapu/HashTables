@@ -7,6 +7,9 @@ public class HashTable {
 
     private Entry[] table;
     private int size;
+    int collisions = 0;
+    long timeToPutMillis;
+    long timeToGetMillis;
 
     public HashTable(){
         table = new Entry[101];
@@ -32,7 +35,10 @@ public class HashTable {
                 return prev.value;
             }
             else{
-                for (int i = index+1; i < table.length; i++) {
+                for (int i = index+1; i < table.length-1; i++) {
+                    if(i == table.length-1){
+                        i = 0;
+                    }
                     if(table[i] == null){
                         table[i] = new Entry(key, value);
                         size++;
@@ -51,6 +57,7 @@ public class HashTable {
                         }
                         return null;
                     }
+                    collisions++;
                 }
             }
         }
@@ -135,28 +142,37 @@ public class HashTable {
             else {
                 return key + " : " + value;
             }
-
         }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner input = new Scanner(new File("sampledata101.txt"));
-        HashTable table = new HashTable();
 
-        while (input.hasNext()){
-            table.put(Integer.parseInt(input.next()), input.next() + " " + input.next());
+
+        for(double i = 0.1;i < 1;i+=0.1) {
+            Scanner input = new Scanner(new File("sampledata500k.txt"));
+            HashTable table = new HashTable((int) Math.round((500000/i)));
+
+            System.out.println("Load factor: " + i);
+            long start = System.currentTimeMillis();
+            while (input.hasNext()) {
+                table.put(Integer.parseInt(input.next()), input.next() + " " + input.next());
+            }
+            long end = System.currentTimeMillis();
+            System.out.println("Time to put: " + (end - start));
+
+            input = new Scanner(new File("sampledata500k.txt"));
+
+            start = System.currentTimeMillis();
+            for (int j = 0; j < table.getSize(); j++) {
+                table.get(Integer.parseInt(input.next()));
+                input.next();
+                input.next();
+            }
+            end = System.currentTimeMillis();
+            System.out.println("Time to get: " + (end - start));
+            System.out.println("Collisions: " + table.collisions);
+            System.out.println();
         }
-        table.remove(86770985);
-        System.out.println(table + "\n");
-
-        input = new Scanner(new File("sampledata101.txt"));
-
-
-        for (int i = 0; i < table.getSize(); i++) {
-            System.out.println(table.get(Integer.parseInt(input.next())));
-            input.next();input.next();
-        }
-
     }
 
 }
