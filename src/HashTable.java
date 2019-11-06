@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 @SuppressWarnings("WeakerAccess")
@@ -8,8 +9,7 @@ public class HashTable {
     private Entry[] table;
     private int size;
     int collisions = 0;
-    long timeToPutMillis;
-    long timeToGetMillis;
+    int probes = 0;
 
     public HashTable(){
         table = new Entry[101];
@@ -69,18 +69,23 @@ public class HashTable {
         int hash = key.hashCode();
         int index = hash%table.length;
         if(table[index] == null){
+            probes++;
             return null;
         }
         else if(!table[index].removed){
+            probes++;
             return table[index].value;
         }
         for (int i = index+1; i < table.length; i++) {
             if(table[i] == null){
+                probes++;
                 return null;
             }
             else if(!table[i].removed && table[i].key.equals(key)){
+                probes++;
                 return table[i].value;
             }
+            probes++;
         }
         return null;
     }
@@ -151,26 +156,36 @@ public class HashTable {
         for(double i = 0.1;i < 1;i+=0.1) {
             Scanner input = new Scanner(new File("sampledata500k.txt"));
             HashTable table = new HashTable((int) Math.round((500000/i)));
+            ArrayList<String> inputData = new ArrayList<>();
+            while (input.hasNext()) {
+                inputData.add(input.nextLine());
+            }
 
             System.out.println("Load factor: " + i);
             long start = System.currentTimeMillis();
-            while (input.hasNext()) {
-                table.put(Integer.parseInt(input.next()), input.next() + " " + input.next());
+            for (String in:inputData) {
+                table.put(Integer.parseInt(in.substring(0, 8).trim()), in.substring(8).trim());
             }
             long end = System.currentTimeMillis();
             System.out.println("Time to put: " + (end - start));
-
-            input = new Scanner(new File("sampledata500k.txt"));
+            System.out.println("Collisions: " + table.collisions);
 
             start = System.currentTimeMillis();
-            for (int j = 0; j < table.getSize(); j++) {
-                table.get(Integer.parseInt(input.next()));
-                input.next();
-                input.next();
+            for (String in:inputData) {
+                table.get(Integer.parseInt(in.substring(0, 8).trim()));
             }
             end = System.currentTimeMillis();
-            System.out.println("Time to get: " + (end - start));
-            System.out.println("Collisions: " + table.collisions);
+            System.out.println("Time to get successful: " + (end - start));
+            System.out.println("Probes: " + table.probes);
+
+            table.probes = 0;
+            start = System.currentTimeMillis();
+            for (String in:inputData) {
+                table.get(Integer.parseInt(in.substring(0, 8).trim())*2);
+            }
+            end = System.currentTimeMillis();
+            System.out.println("Time to get unsuccessful: " + (end - start));
+            System.out.println("Probes: " + table.probes);
             System.out.println();
         }
     }
