@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public class HashTable {
     }
 
     public Object put(Object key, Object value){
-
         int hash = key.hashCode();
         int index = hash%table.length;
         Entry prev = table[index];
@@ -63,7 +61,6 @@ public class HashTable {
                 }
             }
         }
-
         return prev.value;
     }
 
@@ -116,10 +113,6 @@ public class HashTable {
         return null;
     }
 
-    public int getSize() {
-        return size;
-    }
-
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
@@ -130,7 +123,6 @@ public class HashTable {
     }
 
     private static class Entry {
-
         Object key;
         Object value;
         boolean removed;
@@ -153,8 +145,6 @@ public class HashTable {
     }
 
     public static void main(String[] args) throws IOException {
-
-
         File output = new File("results.txt");
         int version = 0;
         while (output.exists()){
@@ -170,6 +160,8 @@ public class HashTable {
         ArrayList<Double> putCollisionAverages = new ArrayList<>();
         ArrayList<Double> getSuccessfulProbeAverages = new ArrayList<>();
         ArrayList<Double> getUnsuccessfulProbeAverages = new ArrayList<>();
+
+//        StdDraw.setCanvasSize(500, 500);
 
         for(double i = 0.1;i < 1;i+=0.1) {
             Scanner input = new Scanner(new File("sampledata500k.txt"));
@@ -220,31 +212,36 @@ public class HashTable {
             writer.write((((double) i+1.0)/10) + "\t" + putTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor\tTime\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulTimeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulTimeAverages.get(i)+"\n");
+//            if(i < getSuccessfulTimeAverages.size()-1) {
+//                StdDraw.line(i / 10.0, getSuccessfulTimeAverages.get(i) * 1000, (i + 1) / 10.0, getSuccessfulTimeAverages.get(i + 1) * 1000);
+//            }
+//            StdDraw.filledCircle(i/10.0, getSuccessfulTimeAverages.get(i)*1000, 0.005);
+
             writer.flush();
         }
-        writer.write("\n\n\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor\tTime\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulTimeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\nLoad Factor\tCollisions\n");
+        writer.write("\n\n\n\n\n\nLoad Factor\tCollisions\n");
         writer.flush();
         for (int i = 0;i < putCollisionAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "\t" + putCollisionAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor\tProbes\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulProbeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor\tProbes\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulProbeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulProbeAverages.get(i)+"\n");
