@@ -7,17 +7,21 @@ import java.util.Scanner;
 @SuppressWarnings("WeakerAccess")
 public class HashTable {
 
-    private Entry[] table;
-    private int size;
-    int collisions = 0;
-    int probes = 0;
+    Entry[] table;
+    int size;
+    int collisions;
+    int probes;
 
     public HashTable(){
         table = new Entry[101];
+        collisions = 0;
+        probes = 0;
     }
 
     public HashTable(int initCap){
         table = new Entry[initCap];
+        collisions = 0;
+        probes = 0;
     }
 
     public Object put(Object key, Object value){
@@ -36,7 +40,7 @@ public class HashTable {
             }
             else{
                 for (int i = index+1; i < table.length-1; i++) {
-                    if(i == table.length-1){
+                    if(i == table.length-2){
                         i = 0;
                     }
                     if(table[i] == null){
@@ -71,11 +75,14 @@ public class HashTable {
             probes++;
             return null;
         }
-        else if(!table[index].removed){
+        else if(!table[index].removed && table[index].key.equals(key)){
             probes++;
             return table[index].value;
         }
-        for (int i = index+1; i < table.length; i++) {
+        for (int i = index+1; i < table.length-1; i++) {
+            if(i == table.length-1){
+                i = 0;
+            }
             if(table[i] == null){
                 probes++;
                 return null;
@@ -86,6 +93,7 @@ public class HashTable {
             }
             probes++;
         }
+        probes++;
         return null;
     }
 
@@ -100,7 +108,7 @@ public class HashTable {
             size--;
             return table[index].value;
         }
-        for (int i = index+1; i < table.length; i++) {
+        for (int i = index; i < table.length; i++) {
             if(table[i] == null){
                 return null;
             }
@@ -149,7 +157,7 @@ public class HashTable {
         int version = 0;
         while (output.exists()){
             version++;
-            output = new File("results" + version + ".csv");
+            output = new File("results" + version + ".txt");
         }
         output.createNewFile();
         FileWriter writer = new FileWriter(output);
@@ -180,9 +188,9 @@ public class HashTable {
             }
             long end = System.currentTimeMillis();
             System.out.println("Time to put: " + ((end - start)/(500000/i)) + " ms");
-            System.out.println("Collisions: " + table.collisions/500000);
+            System.out.println("Collisions: " + (((double) table.collisions)/500000.0));
             putTimeAverages.add((end - start)/(500000/i));
-            putCollisionAverages.add(table.collisions/500000.0);
+            putCollisionAverages.add(((double) table.collisions)/500000.0);
 
             start = System.currentTimeMillis();
             for (String in:inputData) {
@@ -190,9 +198,9 @@ public class HashTable {
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get successful: " + ((end - start)/(500000/i)) + " ms");
-            System.out.println("Probes: " + table.probes/500000);
+            System.out.println("Probes: " + (((double) table.probes)/500000.0));
             getSuccessfulTimeAverages.add((end - start)/(500000/i));
-            getSuccessfulProbeAverages.add(table.probes/500000.0);
+            getSuccessfulProbeAverages.add(((double) table.probes)/500000.0);
 
             table.probes = 0;
             start = System.currentTimeMillis();
@@ -201,9 +209,9 @@ public class HashTable {
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get unsuccessful: " + ((end - start)/(500000/i)) + " ms");
-            System.out.println("Probes: " + table.probes/500000);
+            System.out.println("Probes: " + (((double) table.probes)/500000.0));
             getUnsuccessfulTimeAverages.add((end - start)/(500000/i));
-            getUnsuccessfulProbeAverages.add(table.probes/500000.0);
+            getUnsuccessfulProbeAverages.add(((double) table.probes)/500000.0);
             System.out.println();
         }
         writer.write("Load Factor\tTime\n");
