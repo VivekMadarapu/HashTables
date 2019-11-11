@@ -247,6 +247,5 @@ public class HashTable {
             writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
-        System.out.println("\\u000C");
     }
 }
