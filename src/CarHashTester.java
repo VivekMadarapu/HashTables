@@ -39,7 +39,7 @@ public class CarHashTester {
             System.out.println();
             long start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.put(Integer.parseInt(in.substring(0, 16).trim()), new Car(Integer.parseInt(in.substring(18, 21).trim()), in.substring(23, 66).trim(), in.substring(67).trim()));
+                table.put(new VIN(in.substring(0, 17).trim()), new Car(Integer.parseInt(in.substring(18, 21).trim()), in.substring(23, 66).trim(), in.substring(67).trim()));
             }
             long end = System.currentTimeMillis();
             System.out.println("Time to put: " + ((end - start)/(50000/i)) + " ms");
@@ -57,7 +57,7 @@ public class CarHashTester {
 
             start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.get(Integer.parseInt(in.substring(0, 16).trim()));
+                table.get(new VIN(in.substring(0, 17).trim()));
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get successful: " + ((end - start)/(50000/i)) + " ms");
@@ -75,7 +75,7 @@ public class CarHashTester {
 
             start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.get(Integer.parseInt(in.substring(0, 16).trim()));
+                table.get(new VIN(in.substring(0, 17).trim()));
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get unsuccessful: " + ((end - start)/(50000/i)) + " ms");
@@ -84,16 +84,16 @@ public class CarHashTester {
             getUnsuccessfulProbeAverages.add(((double) table.probes)/50000.0);
             System.out.println();
         }
-        writer.write("Load Factor\tTime\n");
+        writer.write("Load Factor,Time\n");
         writer.flush();
         for (int i = 0;i < putTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + putTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + putTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getSuccessfulTimeAverages.get(i)+"\n");
 //            if(i < getSuccessfulTimeAverages.size()-1) {
 //                StdDraw.line(i / 10.0, getSuccessfulTimeAverages.get(i) * 1000, (i + 1) / 10.0, getSuccessfulTimeAverages.get(i + 1) * 1000);
 //            }
@@ -101,28 +101,28 @@ public class CarHashTester {
 
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tCollisions\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Collisions\n");
         writer.flush();
         for (int i = 0;i < putCollisionAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + putCollisionAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + putCollisionAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulProbeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulProbeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getSuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulProbeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulProbeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
 

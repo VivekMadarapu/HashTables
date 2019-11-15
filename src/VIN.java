@@ -42,7 +42,14 @@ public class VIN {
             hashCode += Integer.parseInt(s, 2);
         }
 
-        return hashCode;
+        return Math.abs(hashCode);
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(Integer.toBinaryString(-90));
+        System.out.println(Integer.toBinaryString(90));
+
     }
 
 
