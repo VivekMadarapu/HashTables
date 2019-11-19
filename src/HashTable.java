@@ -72,6 +72,53 @@ public class HashTable {
         return prev.value;
     }
 
+    public Object putH(Object key, Object value){
+        if(size == table.length){
+            throw new IllegalStateException("Hashtable is full");
+        }
+        int hash = key.hashCode();
+        int index = hash%table.length;
+        Entry prev = table[index];
+        if(prev == null){
+            table[index] = new Entry(key, value);
+            size++;
+            return null;
+        }
+        else if(!prev.removed){
+            if(prev.key.equals(key)) {
+                table[index] = new Entry(key, value);
+                return prev.value;
+            }
+            else{
+                for (int i = index+1; i < table.length-1; i += hashIndex(i)) {
+                    if(i > table.length-2) {
+                        i = i - (table.length-2);
+                    }
+                    if(table[i] == null){
+                        table[i] = new Entry(key, value);
+                        size++;
+                        return null;
+                    }
+                    else if(table[i].removed){
+                        table[i] = new Entry(key, value);
+                        size++;
+                        while (table[i] != null){
+                            if(table[i].key.equals(key)){
+                                table[i].removed = true;
+                                size--;
+                                return table[i].value;
+                            }
+                            i++;
+                        }
+                        return null;
+                    }
+                    collisions++;
+                }
+            }
+        }
+        return prev.value;
+    }
+
     public Object get(Object key){
         int hash = key.hashCode();
         int index = hash%table.length;
@@ -104,6 +151,38 @@ public class HashTable {
         return null;
     }
 
+    public Object getH(Object key){
+        int hash = key.hashCode();
+        int index = hash%table.length;
+        if(table[index] == null){
+            probes++;
+            return null;
+        }
+        else if(!table[index].removed && table[index].key.equals(key)){
+            probes++;
+            return table[index].value;
+        }
+        for (int i = index+1; i < table.length-1; i += hashIndex(i)) {
+            if(i > table.length-2) {
+                i = i - (table.length-2);
+            }
+            if(table[i] == null){
+                probes++;
+                return null;
+            }
+            else if(!table[i].removed && table[i].key.equals(key)){
+                probes++;
+                return table[i].value;
+            }
+            if(i == index){
+                return null;
+            }
+            probes++;
+        }
+        probes++;
+        return null;
+    }
+
     public Object remove(Object key){
         int hash = key.hashCode();
         int index = hash%table.length;
@@ -127,6 +206,50 @@ public class HashTable {
         }
         return null;
     }
+
+    public Object removeH(Object key){
+        int hash = key.hashCode();
+        int index = hash%table.length;
+        if(table[index] == null){
+            return null;
+        }
+        else if(!table[index].removed){
+            table[index].removed = true;
+            size--;
+            return table[index].value;
+        }
+        for (int i = index+1; i < table.length; i += hashIndex(i)) {
+            if(table[i] == null){
+                return null;
+            }
+            else if(!table[i].removed && table[i].key.equals(key)){
+                table[i].removed = true;
+                size--;
+                return table[i].value;
+            }
+        }
+        return null;
+    }
+
+    private int hashIndex(int index){
+
+        String hashString = Integer.toBinaryString(index);
+        char[] hashChars = hashString.toCharArray();
+        char[] newHashChars = new char[hashChars.length];
+        newHashChars[0] = hashChars[hashChars.length-1];
+        for (int i = 0; i < hashChars.length-1; i++) {
+            newHashChars[i+1] = hashChars[i];
+        }
+
+        hashString = "";
+
+        for (char c:newHashChars) {
+            hashString += c;
+        }
+
+        return Integer.parseInt(hashString, 2);
+    }
+
 
     @Override
     public String toString() {
@@ -191,7 +314,7 @@ public class HashTable {
             System.out.println();
             long start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.put(Integer.parseInt(in.substring(0, 8).trim()), in.substring(8).trim());
+                table.putH(Integer.parseInt(in.substring(0, 8).trim()), in.substring(8).trim());
             }
             long end = System.currentTimeMillis();
             System.out.println("Time to put: " + ((end - start)/(500000/i)) + " ms");
@@ -202,7 +325,7 @@ public class HashTable {
             System.out.println(table.size);
             start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.get(Integer.parseInt(in.substring(0, 8).trim()));
+                table.getH(Integer.parseInt(in.substring(0, 8).trim()));
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get successful: " + ((end - start)/(500000/i)) + " ms");
@@ -213,7 +336,7 @@ public class HashTable {
             table.probes = 0;
             start = System.currentTimeMillis();
             for (String in:inputData) {
-                table.get(Integer.parseInt(in.substring(0, 8).trim())+1);
+                table.getH(Integer.parseInt(in.substring(0, 8).trim())+1);
             }
             end = System.currentTimeMillis();
             System.out.println("Time to get unsuccessful: " + ((end - start)/(500000/i)) + " ms");
@@ -222,16 +345,16 @@ public class HashTable {
             getUnsuccessfulProbeAverages.add(((double) table.probes)/500000.0);
             System.out.println();
         }
-        writer.write("Load Factor\tTime\n");
+        writer.write("Load Factor,Time\n");
         writer.flush();
         for (int i = 0;i < putTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + putTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + putTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getSuccessfulTimeAverages.get(i)+"\n");
 //            if(i < getSuccessfulTimeAverages.size()-1) {
 //                StdDraw.line(i / 10.0, getSuccessfulTimeAverages.get(i) * 1000, (i + 1) / 10.0, getSuccessfulTimeAverages.get(i + 1) * 1000);
 //            }
@@ -239,28 +362,28 @@ public class HashTable {
 
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tTime\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulTimeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulTimeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tCollisions\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Collisions\n");
         writer.flush();
         for (int i = 0;i < putCollisionAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + putCollisionAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + putCollisionAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulProbeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getSuccessfulProbeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getSuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\nLoad Factor\tProbes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulProbeAverages.size();i++) {
-            writer.write((((double) i+1.0)/10) + "\t" + getUnsuccessfulProbeAverages.get(i)+"\n");
+            writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
     }
