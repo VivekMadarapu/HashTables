@@ -345,13 +345,13 @@ public class HashTable {
             getUnsuccessfulProbeAverages.add(((double) table.probes)/500000.0);
             System.out.println();
         }
-        writer.write("Load Factor,Time\n");
+        writer.write("Load Factor,Put Time\n");
         writer.flush();
         for (int i = 0;i < putTimeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "," + putTimeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Get Successful Time\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulTimeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "," + getSuccessfulTimeAverages.get(i)+"\n");
@@ -362,7 +362,7 @@ public class HashTable {
 
             writer.flush();
         }
-        writer.write("\n\n\n\n\n\nLoad Factor,Time\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Get Unsuccessful Time\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulTimeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulTimeAverages.get(i)+"\n");
@@ -374,13 +374,13 @@ public class HashTable {
             writer.write((((double) i+1.0)/10) + "," + putCollisionAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Get Successful Probes\n");
         writer.flush();
         for (int i = 0;i < getSuccessfulProbeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "," + getSuccessfulProbeAverages.get(i)+"\n");
             writer.flush();
         }
-        writer.write("\n\n\n\n\n\nLoad Factor,Probes\n");
+        writer.write("\n\n\n\n\n\nLoad Factor,Get Unsuccessful Probes\n");
         writer.flush();
         for (int i = 0;i < getUnsuccessfulProbeAverages.size();i++) {
             writer.write((((double) i+1.0)/10) + "," + getUnsuccessfulProbeAverages.get(i)+"\n");
