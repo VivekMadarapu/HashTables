@@ -191,7 +191,9 @@ public class HashBucket {
             System.out.println("Time to get unsuccessful: " + ((end - start)/(500000/i)) + " ms");
             getUnsuccessfulTimeAverages.add((end - start)/(500000/i));
             System.out.println();
+
         }
+
         writer.write("Load Factor,Put Time\n");
         writer.flush();
         for (int i = 0;i < putTimeAverages.size();i++) {
