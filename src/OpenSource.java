@@ -1,51 +1,62 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class OpenSource {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        HashMap groups = new HashMap();
-
         Scanner file = new Scanner(new File("open.dat"));
 
-        List<String> fileData = new ArrayList<>();
-        while(file.hasNext()){
-            fileData.add(file.nextLine());
-        }
+        List<List<String>> fileData = new ArrayList<>();
 
-        for (int i = 0; i < fileData.size(); i++) {
-            String line = fileData.get(i);
-            if(line.equals("0")){
+        List<String> duplicates = new ArrayList<>();
+        List<String> used = new ArrayList<>();
+        int x = -1;
+        while(file.hasNext()){
+            String nL = file.nextLine();
+            if(nL.equals("0")){
                 break;
             }
-            else if(line.equals("1")){
-                System.out.println();
-            }
-            else if(line.equals(line.toUpperCase())){
-                List<String> members = new ArrayList<>();
-                String group = line;
-                i++;
-                String id = fileData.get(i);
-                while (id.equals(id.toLowerCase())){
-                    if(!members.contains(id)) {
-                        members.add(id);
+            else if(nL.equals("1")){
+                HashMap<String, Integer> groups = new HashMap<>();
+                for (List<String> fileDatum : fileData) {
+                    if (fileDatum.size() == 0) {
+                        System.out.println();
+                    } else {
+                        groups.put(fileDatum.get(0), fileDatum.size()-1);
                     }
-                    i++;
-                    id = fileData.get(i);
                 }
-                i--;
-                groups.put(group, members.toArray());
+                List<Map.Entry<String, Integer>> groupList = new LinkedList<>(groups.entrySet());
+                groupList.sort(Comparator.comparing(Map.Entry::getValue));
+                for (int i = groupList.size()-1; i >= 0; i--) {
+                    System.out.println(groupList.get(i).getKey() + " " + groupList.get(i).getValue());
+                }
+                System.out.println();
+                fileData.clear();
+                used.clear();
+                duplicates.clear();
+                x = -1;
+            }
+            else if(nL.equals(nL.toUpperCase())){
+                fileData.add(new ArrayList<>());
+                x++;
+                fileData.get(x).add(nL);
+            }
+            else {
+                if(!fileData.get(x).contains(nL) && !duplicates.contains(nL)){
+                    if(!used.contains(nL)) {
+                        fileData.get(x).add(nL);
+                        used.add(nL);
+                    }
+                    else{
+                        for (List<String> stringList : fileData) {
+                            stringList.remove(nL);
+                        }
+                        duplicates.add(nL);
+                    }
+                }
             }
         }
-        System.out.println(groups);
-
-
     }
-
-
 }
