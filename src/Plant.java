@@ -31,7 +31,6 @@ public class Plant {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-
         Scanner file = new Scanner(new File("plant.dat"));
         List<String> fileData = new ArrayList<>();
         while(file.hasNext()){
@@ -51,7 +50,5 @@ public class Plant {
             }
         }
         computeTreePercentages(trees);
-
     }
-
 }
