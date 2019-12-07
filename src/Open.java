@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class OpenSource {
+public class Open {
 
     public static void main(String[] args) throws FileNotFoundException {
 
