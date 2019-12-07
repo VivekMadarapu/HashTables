@@ -5,7 +5,6 @@ import java.util.*;
 public class Open {
 
     public static void main(String[] args) throws FileNotFoundException {
-
         Scanner file = new Scanner(new File("open.dat"));
 
         List<List<String>> fileData = new ArrayList<>();

@@ -34,7 +34,6 @@ public class Plant {
 
         Scanner file = new Scanner(new File("plant.dat"));
         List<String> fileData = new ArrayList<>();
-
         while(file.hasNext()){
             fileData.add(file.nextLine());
         }
