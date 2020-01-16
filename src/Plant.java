@@ -26,7 +26,7 @@ public class Plant {
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
         for (Map.Entry<String, Integer> entry : treeFreq.entrySet()) {
-            System.out.println(entry.getKey() + " " + df.format(100.0*entry.getValue()/ list.size()));
+            System.out.printf(entry.getKey() + " %.4f\n",100.0*entry.getValue()/ list.size());
         }
     }
 
